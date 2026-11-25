@@ -24,4 +24,10 @@ python manage.py runserver
 
 ブラウザーで `http://127.0.0.1:8000/` を開きます。`/healthz/` は正常時にHTTP 200を返します。
 
+```bash
+curl --fail http://127.0.0.1:8000/healthz/
+```
+
+正常時の応答は `{"status": "ok"}` です。
+
 [実装詳細・GitHub Rulesetの設定・検証方法](docs/security-checks.md)
