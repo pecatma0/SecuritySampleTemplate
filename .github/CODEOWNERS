@@ -1,3 +1,12 @@
 /.github/CODEOWNERS @pecatma0
 /.github/workflows/ @pecatma0
 /.github/security/ @pecatma0
+.gitignore @pecatma0
+.gitleaks.toml @pecatma0
+.gitleaksignore @pecatma0
+.semgrepignore @pecatma0
+.trivyignore @pecatma0
+.trivyignore.yaml @pecatma0
+.trivyignore.yml @pecatma0
+trivy.yaml @pecatma0
+trivy.yml @pecatma0
