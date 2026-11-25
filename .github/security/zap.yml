@@ -1,0 +1,48 @@
+env:
+  contexts:
+    - name: django
+      urls:
+        - http://django:8000
+      includePaths:
+        - 'http://django:8000/.*'
+  parameters:
+    failOnError: true
+    failOnWarning: false
+    progressToStdout: true
+
+jobs:
+  - type: passiveScan-config
+    parameters:
+      scanOnlyInScope: true
+  - type: spider
+    parameters:
+      context: django
+      url: http://django:8000/
+      maxDuration: 1
+      parseRobotsTxt: false
+      parseSitemapXml: false
+      processForm: false
+      postForm: false
+    tests:
+      - name: Confirm the spider accessed at least two URLs
+        type: stats
+        statistic: stats.spider.url.found
+        operator: '>='
+        value: 2
+        onFail: error
+  - type: passiveScan-wait
+    parameters:
+      maxDuration: 3
+  - type: report
+    parameters:
+      template: traditional-html
+      reportDir: /zap/wrk
+      reportFile: zap-report.html
+  - type: report
+    parameters:
+      template: traditional-json
+      reportDir: /zap/wrk
+      reportFile: zap-report.json
+  - type: exitStatus
+    parameters:
+      errorLevel: Medium

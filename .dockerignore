@@ -1,0 +1,6 @@
+**
+!requirements.txt
+!manage.py
+!sample/
+!sample/*.py
+**/__pycache__
