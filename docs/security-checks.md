@@ -21,6 +21,8 @@
 
 ジョブのサマリーやレポートから、ツール名・対象・重要度を確認する。Gitleaksはマスクしたログのみを残す。CodeQLの判定対象はセキュリティクエリの結果。
 
+原因を調べるときは、PRの **Checks → Security checks → security-gate** を開く。ゲートのログに6ジョブの結果が1行ずつ表示されるため、失敗したツールのログやアーティファクトへ進める。
+
 ## GitHub Ruleset
 
 `.github/security/ruleset.json` をリポジトリの **Settings → Rulesets** からインポートするか、リポジトリのRulesets APIで作成する。対象は `refs/heads/main` と `refs/heads/develop`。適用状態は `active` で、通常のバイパスは設定しない。
