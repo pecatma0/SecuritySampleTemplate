@@ -1,0 +1,6 @@
+rules:
+  - id: verification-marker
+    message: Harmless CI policy verification marker
+    severity: LOW
+    languages: [python]
+    pattern: VERIFICATION_MARKER = "semgrep-policy-check"
