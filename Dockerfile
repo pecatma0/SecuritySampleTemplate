@@ -3,7 +3,10 @@ FROM python:3.13-alpine@sha256:9ef1a599f863231c3d91e941389bfdc4a2d6070557243d54d
 ENV PYTHONUNBUFFERED=1 PYTHONDONTWRITEBYTECODE=1
 WORKDIR /app
 COPY requirements.txt .
-RUN python -m pip install --no-cache-dir --no-deps -r requirements.txt
+RUN apk upgrade --no-cache \
+    && python -m pip install --no-cache-dir --no-deps -r requirements.txt \
+    && python -m pip uninstall --yes pip \
+    && rm -rf /usr/local/lib/python3.13/ensurepip
 COPY manage.py .
 COPY sample/ ./sample/
 USER 10001:10001

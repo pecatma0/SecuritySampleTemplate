@@ -117,7 +117,9 @@ jobs:
             --failOnCVSS 4.0 --format JSON --format HTML --out security-reports || status=$?
           report=security-reports/dependency-check-report.json
           jq -e '.dependencies | any(.[]; .fileName | test("(^|[^a-z])django([^a-z]|$)"; "i"))' "$report" >/dev/null
-          jq -r '.dependencies[].vulnerabilities[]? | [.name, .severity] | @tsv' "$report"
+          jq -r '.dependencies[].vulnerabilities[]? |
+            if .severity == "LOW" then "::warning::Dependency-Check: \(.name) (LOW)"
+            else [.name, .severity] | @tsv end' "$report"
           jq -e 'all(.dependencies[].vulnerabilities[]?;
             .cvssv2 != null or .cvssv3 != null or .cvssv4 != null
             or ((.severity // "") | IN("LOW", "MEDIUM", "HIGH", "CRITICAL")))' "$report" >/dev/null
@@ -234,7 +236,10 @@ jobs:
           for report in security-reports/trivy-*.json; do
             jq -e '.Results | type == "array" and length > 0' "$report" >/dev/null
             jq -r '.Results[] | (.Vulnerabilities[]?, .Misconfigurations[]?) |
-              [.Severity, (.VulnerabilityID // .ID), (.PkgName // .Type)] | @tsv' "$report"
+              (.VulnerabilityID // .ID) as $id | (.PkgName // .Type) as $target |
+              if .Severity == "LOW" or .Severity == "UNKNOWN" then
+                "::warning::Trivy: \($id) \($target) (\(.Severity))"
+              else [.Severity, $id, $target, .InstalledVersion, .FixedVersion] | @tsv end' "$report"
           done
           jq -se 'all(.[].Results[] | (.Vulnerabilities[]?, .Misconfigurations[]?);
             .Severity == "LOW" or .Severity == "UNKNOWN")' security-reports/trivy-*.json >/dev/null
